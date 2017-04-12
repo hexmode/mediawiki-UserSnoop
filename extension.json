@@ -1,0 +1,53 @@
+{
+	"name": "UserSnoop",
+    "version": "0.1.0",
+	"license-name": "GPL-2.0",
+	"author": [
+		"Kimon Andreou",
+		"[//mwstake.org Mark A. Hershberger]"
+	],
+	"require": [ "1.26" ],
+	"url": "https://www.mediawiki.org/wiki/Extension:UserSnoop",
+	"descriptionmsg": "usersnoop-desc",
+	"type": "specialpage",
+	"SpecialPages": {
+		"UserSnoop": "UserSnoop\\SpecialPage"
+	},
+	"MessagesDirs": {
+		"UserSnoop": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"UserSnoop\\UserSnoop": "src/UserSnoop.php",
+		"UserSnoop\\Hook": "src/Hook.php",
+		"UserSnoop\\NewPages": "src/NewPages.php",
+		"UserSnoop\\Pager": "src/Pager.php",
+		"UserSnoop\\PagerPageviews": "src/PagerPageviews.php",
+		"UserSnoop\\SpecialPage": "src/SpecialPage.php"
+	},
+	"ExtensionMessagesFiles": {
+		"UserSnoopAlias": "src/i18n/Alias.php"
+	},
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": [
+			"UserSnoop\\Hook::onLoadExtensionSchemaUpdates"
+		]
+	},
+	"GroupPermissions": {
+		"sysop": {
+			"usersnoop": true
+		},
+		"bureaucrat": {
+			"usersnoop": true
+		}
+
+	},
+	"AvailableRights": [
+		"usersnoop"
+	],
+	"config": {
+		"_prefix": "UserSnoop"
+	},
+	"manifest_version": 1
+}

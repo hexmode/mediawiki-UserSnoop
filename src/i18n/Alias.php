@@ -5,9 +5,7 @@
  * @file
  * @ingroup Extensions
  */
-
 $specialPageAliases = [];
-
 /** English */
 $specialPageAliases['en'] = [
 	'UserSnoop' => [ 'UserSnoop' ]
