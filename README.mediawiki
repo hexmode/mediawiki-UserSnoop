@@ -1,0 +1,46 @@
+
+This '''UserSnoop''' extension creates a new special page through which a user with the appropriate permissions ('usersnoop' and 'sysop') can view and manipulate users.
+
+The main section is display of user information:
+* internal user id
+* username
+* real name
+* email address
+* whether the user has new talk or not
+* date of registration
+* number of edits
+* whether the user is blocked or not
+* block reason (if blocked)
+* list of *effective* groups
+* last update of user profile
+* user's signature
+  
+If the calling user is a member of the 'bureaucrat' group then they also can:
+* user's last login
+* force the user logout (boot user)
+* block the user
+* spread the block on the user to all of his/her ip addresses
+* unblock the user
+
+The actions on information that can be called on the target user:
+* page views
+** page name
+** number of visits
+** last visit
+* watchlist
+** page name
+** last visit
+** last edit by user
+** last edit by any user
+* new pages
+** page name
+** create date
+** last edit by user
+** last edit by any user
+
+== Note ==
+This extension duplicates some of the functionality of [https://mediawiki.org/wiki/Extension:UserPageViewTracker UserPageViewTracker]
+
+== See also ==
+* [https://mediawiki.org/wiki/Extension:LookupUser LookupUser]
+* [https://mediawiki.org/wiki/Extension:UserPageViewTracker UserPageViewTracker]
