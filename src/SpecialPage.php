@@ -28,7 +28,7 @@ use Parser;
 use ParserOptions;
 
 class SpecialPage extends \SpecialPage {
-    protected $target = null;
+	protected $target = null;
 
 	function __construct() {
 		#create new special page with the 'usersnoop' permission required
@@ -37,8 +37,8 @@ class SpecialPage extends \SpecialPage {
 
 	#do your stuff
 	function execute( $par = null ) {
-        $out = $this->getOutput();
-        $req = $this->getRequest();
+		$out = $this->getOutput();
+		$req = $this->getRequest();
 
 		if( !$this->getUser()->isAllowed( 'usersnoop' ) ) {
 			$out->permissionRequired( 'usersnoop' );
@@ -48,22 +48,22 @@ class SpecialPage extends \SpecialPage {
 		$out->setPageTitle('User snoop');
 
 		#initialize our victim user and get his/her id
-        $user = null;
-        if ( isset( $par ) ) {
-            $user = User::newFromName( $par );
-        }
+		$user = null;
+		if ( isset( $par ) ) {
+			$user = User::newFromName( $par );
+		}
 
-        if ( !$user && $req->getVal( 'username' ) ) {
-            $user = User::newFromName( $req->getVal( 'username' ) );
-        }
+		if ( !$user && $req->getVal( 'username' ) ) {
+			$user = User::newFromName( $req->getVal( 'username' ) );
+		}
 
-        $userID = null;
-        if ( $user ) {
-            $userID = $user->getID();
-        }
-        if( $req->getVal('userid') && $req->getVal('useraction') ) {
-            $userID = $req->getVal('userid');
-        }
+		$userID = null;
+		if ( $user ) {
+			$userID = $user->getID();
+		}
+		if( $req->getVal('userid') && $req->getVal('useraction') ) {
+			$userID = $req->getVal('userid');
+		}
 
 		if($userID) {
 			#and now create a user object for the victim
@@ -77,7 +77,7 @@ class SpecialPage extends \SpecialPage {
 		if ( $this->target ) {
 			$this->action = $req->getVal('action');
 			$this->targetAction = $req->getVal('useraction');
-            $uid = $this->target->getID();
+			$uid = $this->target->getID();
 
 			#these are the main actions
 			switch($this->action) {
@@ -153,7 +153,7 @@ class SpecialPage extends \SpecialPage {
 	function getPageHeader() {
 		global $wgServer, $wgScript, $wgContLang;
 
-        $req = $this->getRequest();
+		$req = $this->getRequest();
 		$out = '<form name="usersnoop" id="usersnoop" method="post">';
 		$out .= wfMessage( 'usersnoopusername' )->text().': <input type="text" name="username" value="'.$this->target.'">';
 		$out .= '&nbsp;&nbsp;&nbsp;&nbsp;'.wfMessage( 'usersnoopaction' )->text().': <select name="action">';
@@ -181,8 +181,8 @@ class SpecialPage extends \SpecialPage {
 			#in 1.11 the User object has a getRegistration() method - need to upgrade but, this works too
 			$reg = $dbr->selectField('user',
 									 "concat(substr(user_registration, 1, 4),
-                                        '-',substr(user_registration,5,2),
-                                        '-',substr(user_registration,7,2),
+'-',substr(user_registration,5,2),
+'-',substr(user_registration,7,2),
                                         ' ',substr(user_registration,9,2),
                                         ':',substr(user_registration,11,2),
                                         ':',substr(user_registration,13,2))",
@@ -336,14 +336,15 @@ class SpecialPage extends \SpecialPage {
 
     #function that updates the table containing the hits
     static public function UserPageViewTracker(&$parser, &$text) {
-        global $wgDBprefix, $wgDBname;
+        global $wgDBprefix, $wgDBname, $wgUser;
 
 		$title = $parser->getTitle();
 		$artID = $title->getArticleID();
 		$db = &wfGetDB(DB_SLAVE);
+		$userId = $wgUser->getID();
 
 		#check to see if the user has visited this page before
-		$query = "SELECT hits, last FROM ".$wgDBprefix."user_page_views WHERE user_id = ".$this->getUser()->getID();
+		$query = "SELECT hits, last FROM ".$wgDBprefix."user_page_views WHERE user_id = ".$userId;
 		$query .= " AND page_id = $artID";
 		if($result = $db->doQuery($query)) {
 			$row = $db->fetchRow($result);
@@ -356,14 +357,14 @@ class SpecialPage extends \SpecialPage {
 					$query = "UPDATE ".$wgDBprefix."user_page_views ";
 					$query .= "SET hits = ".($hits + 1);
 					$query .= ", last='".wfTimestampNow()."'";
-					$query .= " WHERE user_id = ".$this->getUser()->getID();
+					$query .= " WHERE user_id = ".$userId;
 					$query .= " AND page_id = ".$artID;
 				}
 				else
 				{
 					#looks like this is our first visit, create the record
 					$query = "INSERT INTO ".$wgDBprefix."user_page_views(user_id, page_id, hits, last)";
-					$query .= " VALUES(".$this->getUser()->getID().",".$artID.",1,'".wfTimestampNow()."')";
+					$query .= " VALUES(".$userId.",".$artID.",1,'".wfTimestampNow()."')";
 				}
 				$db->doQuery($query);
 			}
