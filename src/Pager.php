@@ -30,32 +30,30 @@ use LinkBatch;
 class Pager extends AlphabeticPager {
 	protected $targetUser = null;
 
-	#constructor - also inilizes "stuff"
-	function __construct($uid=0) {
+	# constructor - also inilizes "stuff"
+	function __construct( $uid = 0 ) {
 		parent::__construct();
-		if($uid > 0) {
+		if ( $uid > 0 ) {
 			$this->uid = $uid;
 			$this->targetUser = User::newFromID( $this->uid );
 		} else {
 			global $wgRequest;
 
 			$user = $wgRequest->getVal( 'username' );
-			if($user) {
+			if ( $user ) {
 				$this->targetUser = User::newFromText( $user );
 			}
 		}
 	}
 
 	function getBodyHeader() {
-
 	}
 
 	function getBodyFooter() {
-
 	}
 
 	function getBody() {
-		if (!$this->mQueryDone) {
+		if ( !$this->mQueryDone ) {
 			$this->doQuery();
 		}
 		$batch = new LinkBatch;
@@ -68,16 +66,13 @@ class Pager extends AlphabeticPager {
 		return parent::getBody();
 	}
 
-	function formatRow($row) {
-
+	function formatRow( $row ) {
 	}
 
 	function getQueryInfo() {
-
 	}
 
 	function getIndexField() {
-
 	}
 
 	function getPageHeader() {
@@ -86,23 +81,22 @@ class Pager extends AlphabeticPager {
 	function getDefaultQuery() {
 		global $wgRequest;
 		$query = parent::getDefaultQuery();
-		if($this->targetUser != '') {
+		if ( $this->targetUser != '' ) {
 			$query['username'] = $this->targetUser;
 		}
-		$query['action'] = $wgRequest->getVal('action');
+		$query['action'] = $wgRequest->getVal( 'action' );
 		return $query;
 	}
 
-	function sandboxParse($wikiText) {
+	function sandboxParse( $wikiText ) {
 		global $wgTitle, $wgUser;
 
 		$myParser = new Parser();
 		$myParserOptions = new ParserOptions();
-		$myParserOptions->initialiseFromUser($wgUser);
-		$result = $myParser->parse($wikiText, $wgTitle, $myParserOptions);
+		$myParserOptions->initialiseFromUser( $wgUser );
+		$result = $myParser->parse( $wikiText, $wgTitle, $myParserOptions );
 
 		return $result->getText();
 	}
-
 
 }

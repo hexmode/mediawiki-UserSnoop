@@ -40,8 +40,7 @@ class ChangeUserEmail extends FormSpecialPage {
 	 * @var Status
 	 */
 	private $status;
-	private $user
-;
+	private $user;
 	public function __construct() {
 		parent::__construct( 'ChangeUserEmail', 'usersnoop' );
 	}
@@ -100,12 +99,12 @@ class ChangeUserEmail extends FormSpecialPage {
 		$form->setTableId( 'mw-changeemail-table' );
 		$form->setSubmitTextMsg( 'changeemail-submit' );
 		$form->addHiddenFields(
-            $this->getRequest()->getValues( 'returnto', 'returntoquery' )
-        );
+			$this->getRequest()->getValues( 'returnto', 'returntoquery' )
+		);
 
 		$form->addHeaderText(
-            $this->msg( 'usersnoop-changeuseremail-header', $this->user )->parseAsBlock()
-        );
+			$this->msg( 'usersnoop-changeuseremail-header', $this->user )->parseAsBlock()
+		);
 	}
 
 	public function onSubmit( array $data ) {
@@ -132,9 +131,9 @@ class ChangeUserEmail extends FormSpecialPage {
 		} elseif ( $this->status->value === 'eauth' ) {
 			# Notify user that a confirmation email has been sent...
 			$this->getOutput()->wrapWikiMsg(
-                "<div class='error' style='clear: both;'>\n$1\n</div>",
+				"<div class='error' style='clear: both;'>\n$1\n</div>",
 				'usersnoop-eauthentsent', $this->getUser()->getName()
-            );
+			);
 			// just show the link to go back
 			$this->getOutput()->addReturnTo( $titleObj, wfCgiToArray( $query ) );
 		}
@@ -147,8 +146,6 @@ class ChangeUserEmail extends FormSpecialPage {
 	 * @return Status
 	 */
 	private function attemptChange( User $user, $pass, $newaddr ) {
-		global $wgAuth;
-
 		if ( $newaddr != '' && !Sanitizer::validateEmail( $newaddr ) ) {
 			return Status::newFatal( 'invalidemailaddress' );
 		}
@@ -166,9 +163,6 @@ class ChangeUserEmail extends FormSpecialPage {
 		Hooks::run( 'PrefsEmailAudit', [ $user, $oldaddr, $newaddr ] );
 
 		$user->saveSettings();
-
-		$wgAuth->updateExternalDB( $user );
-
 		return $status;
 	}
 

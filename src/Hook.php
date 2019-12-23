@@ -52,43 +52,41 @@ class Hook {
 		}
 	}
 
-    /**
-     * View tracker
-     */
-    static public function UserPageViewTracker(&$parser, &$text) {
-        global $wgDBprefix, $wgDBname, $wgUser;
+	/**
+	 * View tracker
+	 */
+	public static function UserPageViewTracker( &$parser, &$text ) {
+		global $wgDBprefix, $wgDBname, $wgUser;
 
 		$title = $parser->getTitle();
 		$artID = $title->getArticleID();
-		$db = &wfGetDB(DB_SLAVE);
+		$db = &wfGetDB( DB_REPLICA );
 		$userId = $wgUser->getID();
 
-		#check to see if the user has visited this page before
-		$query = "SELECT hits, last FROM ".$wgDBprefix."user_page_views WHERE user_id = "
-               . $userId , " AND page_id = $artID";
-		if($result = $db->doQuery($query)) {
-			$row = $db->fetchRow($result);
+		# check to see if the user has visited this page before
+		$query = "SELECT hits, last FROM " . $wgDBprefix . "user_page_views WHERE user_id = "
+			   . $userId , " AND page_id = $artID";
+		if ( $result = $db->doQuery( $query ) ) {
+			$row = $db->fetchRow( $result );
 			$last = $row["last"];
 
 			# due to multiple calls, don't double count if we've been
 			# here within the last 5 seconds
-			if($last < (wfTimestampNow() - 5)) {
+			if ( $last < ( wfTimestampNow() - 5 ) ) {
 				$hits = $row["hits"];
-				if($hits > 0) {
-					$query = "UPDATE ".$wgDBprefix."user_page_views ";
-					$query .= "SET hits = ".($hits + 1);
-					$query .= ", last='".wfTimestampNow()."'";
-					$query .= " WHERE user_id = ".$userId;
-					$query .= " AND page_id = ".$artID;
+				if ( $hits > 0 ) {
+					$query = "UPDATE " . $wgDBprefix . "user_page_views ";
+					$query .= "SET hits = " . ( $hits + 1 );
+					$query .= ", last='" . wfTimestampNow() . "'";
+					$query .= " WHERE user_id = " . $userId;
+					$query .= " AND page_id = " . $artID;
+				} else {
+					# looks like this is our first visit, create the record
+					$query = "INSERT INTO " . $wgDBprefix . "user_page_views"
+						   . "(user_id, page_id, hits, last) "
+						   . "VALUES(" . $userId . "," . $artID . ",1,'" . wfTimestampNow() . "')";
 				}
-				else
-				{
-					#looks like this is our first visit, create the record
-					$query = "INSERT INTO ".$wgDBprefix."user_page_views"
-                           . "(user_id, page_id, hits, last) "
-                           . "VALUES(".$userId.",".$artID.",1,'".wfTimestampNow()."')";
-				}
-				$db->doQuery($query);
+				$db->doQuery( $query );
 			}
 		}
 		return true;
