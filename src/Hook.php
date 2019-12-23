@@ -21,7 +21,9 @@
 
 namespace UserSnoop;
 
+use Linker;
 use DatabaseUpdater;
+use RequestContext;
 
 class Hook {
 	/**
@@ -33,5 +35,20 @@ class Hook {
 		$updater->addExtensionTable( 'user_page_views', __DIR__ .
 									 '/../sql/user_page_views.sql' );
 		return true;
+	}
+
+	/**
+	 * Add the private info link
+	 */
+	public static function onUserToolLinksEdit(
+		int $userId, string $userText, array &$items
+	) {
+		$user = RequestContext::getMain()->getUser();
+		if ( $user->isAllowed( "usersnoop" ) ) {
+			array_unshift( $items, Linker::link(
+				SpecialPage::getTitleFor( "UserSnoop", $userText ),
+				wfMessage( "usersnooplabel" )->escaped()
+			) );
+		}
 	}
 }

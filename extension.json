@@ -32,6 +32,9 @@
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": [
 			"UserSnoop\\Hook::onLoadExtensionSchemaUpdates"
+		],
+		"UserToolLinksEdit": [
+			"UserSnoop\\Hook::onUserToolLinksEdit"
 		]
 	},
 	"GroupPermissions": {
