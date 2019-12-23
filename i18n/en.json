@@ -36,5 +36,7 @@
 	"usersnooplastvisit": "Last visit",
 	"usersnooplasteditedbythisuser": "Last edited<br />by this user",
 	"usersnooplasteditedbyanyuser": "Last edited<br />by any user",
-	"usersnoopcreated": "Created"
+	"usersnoopcreated": "Created",
+
+	"action-usersnoop": "see private user data"
 }

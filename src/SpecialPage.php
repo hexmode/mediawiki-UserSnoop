@@ -3,7 +3,7 @@
 /**
  * our special page class
  *
- * Copyright (C) 2017  Mark A. Hershberger
+ * Copyright (C) 2017, 2019  Mark A. Hershberger
  * Copyright (C) 2007  Kimon Andreou
  *
  * This program is free software: you can redistribute it and/or modify
@@ -26,6 +26,7 @@ use User;
 use LogPage;
 use Parser;
 use ParserOptions;
+use PermissionsError;
 
 class SpecialPage extends \SpecialPage {
 	protected $target = null;
@@ -41,8 +42,7 @@ class SpecialPage extends \SpecialPage {
 		$req = $this->getRequest();
 
 		if( !$this->getUser()->isAllowed( 'usersnoop' ) ) {
-			$out->permissionRequired( 'usersnoop' );
-			return;
+			throw new PermissionsError( 'usersnoop' );
 		}
 
 		$out->setPageTitle('User snoop');

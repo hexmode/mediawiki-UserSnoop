@@ -4,9 +4,9 @@
 	"license-name": "GPL-2.0",
 	"author": [
 		"Kimon Andreou",
-		"[//mwstake.org Mark A. Hershberger]"
+		"[https://nichework.com/ Mark A. Hershberger]"
 	],
-	"require": [ "1.26" ],
+	"require": [ "1.33" ],
 	"url": "https://www.mediawiki.org/wiki/Extension:UserSnoop",
 	"descriptionmsg": "usersnoop-desc",
 	"type": "specialpage",
