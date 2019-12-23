@@ -20,15 +20,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace UserSnoop;
+namespace UserSnoop\Special;
 
-use User;
 use LogPage;
 use Parser;
 use ParserOptions;
 use PermissionsError;
+use SpecialPage;
+use Title;
+use User;
+use UserSnoop\Pager;
+use UserSnoop\Pager\NewPagers;
+use UserSnoop\Pager\Pageviews;
+use UserSnoop\Pager\Watchlist;
 
-class SpecialPage extends \SpecialPage {
+class UserSnoop extends SpecialPage {
 	protected $target = null;
 
 	function __construct() {
@@ -82,13 +88,13 @@ class SpecialPage extends \SpecialPage {
 			#these are the main actions
 			switch($this->action) {
 			case 'pageviews':
-				$up = new PagerPageviews($uid);
+				$up = new Pageviews($uid);
 				break;
 			case 'watchlist':
-				$up = new PagerWatchlist($uid);
+				$up = new Watchlist($uid);
 				break;
 			case 'newpages':
-				$up = new PagerNewpages($uid);
+				$up = new NewPages($uid);
 				break;
 			default:
 				$ignore = true;
@@ -128,7 +134,8 @@ class SpecialPage extends \SpecialPage {
 		#get the master page header
 		$s = $this->getPageHeader();
 
-		#if we're ignoring the body or we have an invalid uid, don't try to generate anything
+		# if we're ignoring the body or we have an invalid uid, don't
+		# try to generate anything
 		if (!$ignore && ($this->target->getID() > 0)) {
 
 			$usersbody = $up->getBody();
@@ -147,9 +154,10 @@ class SpecialPage extends \SpecialPage {
 		$out->addHTML( $s );
 	}
 
-	#Creates the page header and if a user is selected already through the 'username' variable, process
+	# Creates the page header and if a user is selected already through
+	# the 'username' variable, process
 	#
-	#@return string
+	# @return string
 	function getPageHeader() {
 		global $wgServer, $wgScript, $wgContLang;
 
@@ -193,8 +201,11 @@ class SpecialPage extends \SpecialPage {
 			$out .= '<td align="center">'.$this->target->getRealName().'</td>';
 			$mt = $this->target->getEmail();
 			$out .= '<td align="center">';
+            $changeLink = Title::newFromText(
+                            "ChangeUserEmail/" . $this->target, NS_SPECIAL
+            )->getFullURL( [ "returnto" => "Special:UserSnoop/" . $this->target ] );
 			$out .= "<a href=\"mailto:$mt\" class= \"external text\" title=\"mailto:$mt\" rel=\"nofollow\">";
-			$out .= "$mt</a></td>";
+			$out .= "$mt</a> (<a href=\"$changeLink\">change</a>)</td>";
 			$out .= '<td align="center">';
 			if($this->target->getNewTalk()) {
 				$out .= '<a href="'.$wgScript.'?title='.$wgContLang->GetNsText(NS_USER_TALK);
@@ -332,43 +343,5 @@ class SpecialPage extends \SpecialPage {
 			$log = new LogPage('block');
 			$log->addEntry('unblock', Title::makeTitle(NS_USER, $this->target), wfMessage( 'usersnoopunblockmessage' )->text());
 		}
-	}
-
-    #function that updates the table containing the hits
-    static public function UserPageViewTracker(&$parser, &$text) {
-        global $wgDBprefix, $wgDBname, $wgUser;
-
-		$title = $parser->getTitle();
-		$artID = $title->getArticleID();
-		$db = &wfGetDB(DB_SLAVE);
-		$userId = $wgUser->getID();
-
-		#check to see if the user has visited this page before
-		$query = "SELECT hits, last FROM ".$wgDBprefix."user_page_views WHERE user_id = ".$userId;
-		$query .= " AND page_id = $artID";
-		if($result = $db->doQuery($query)) {
-			$row = $db->fetchRow($result);
-			$last = $row["last"];
-
-			#due to multiple calls, don't double count if we've been here within the last 5 seconds
-			if($last < (wfTimestampNow() - 5)) {
-				$hits = $row["hits"];
-				if($hits > 0) {
-					$query = "UPDATE ".$wgDBprefix."user_page_views ";
-					$query .= "SET hits = ".($hits + 1);
-					$query .= ", last='".wfTimestampNow()."'";
-					$query .= " WHERE user_id = ".$userId;
-					$query .= " AND page_id = ".$artID;
-				}
-				else
-				{
-					#looks like this is our first visit, create the record
-					$query = "INSERT INTO ".$wgDBprefix."user_page_views(user_id, page_id, hits, last)";
-					$query .= " VALUES(".$userId.",".$artID.",1,'".wfTimestampNow()."')";
-				}
-				$db->doQuery($query);
-			}
-		}
-		return true;
 	}
 }
