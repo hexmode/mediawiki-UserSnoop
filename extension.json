@@ -1,6 +1,6 @@
 {
 	"name": "UserSnoop",
-    "version": "0.1.0",
+	"version": "0.1.0",
 	"license-name": "GPL-2.0",
 	"author": [
 		"Kimon Andreou",
@@ -11,7 +11,8 @@
 	"descriptionmsg": "usersnoop-desc",
 	"type": "specialpage",
 	"SpecialPages": {
-		"UserSnoop": "UserSnoop\\SpecialPage"
+		"UserSnoop": "UserSnoop\\Special\\UserSnoop",
+		"ChangeUserEmail": "UserSnoop\\Special\\ChangeUserEmail"
 	},
 	"MessagesDirs": {
 		"UserSnoop": [
@@ -20,11 +21,13 @@
 	},
 	"AutoloadClasses": {
 		"UserSnoop\\UserSnoop": "src/UserSnoop.php",
+		"UserSnoop\\Special\\ChangeUserEmail": "src/Special/ChangeUserEmail.php",
 		"UserSnoop\\Hook": "src/Hook.php",
-		"UserSnoop\\NewPages": "src/NewPages.php",
 		"UserSnoop\\Pager": "src/Pager.php",
-		"UserSnoop\\PagerPageviews": "src/PagerPageviews.php",
-		"UserSnoop\\SpecialPage": "src/SpecialPage.php"
+		"UserSnoop\\Pager\\NewPages": "src/Pager/NewPages.php",
+		"UserSnoop\\Pager\\PageViews": "src/Pager/PageViews.php",
+		"UserSnoop\\Pager\\Watchlist": "src/Pager/Watchlist.php",
+		"UserSnoop\\Special\\UserSnoop": "src/Special/UserSnoop.php"
 	},
 	"ExtensionMessagesFiles": {
 		"UserSnoopAlias": "src/i18n/Alias.php"

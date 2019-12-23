@@ -39,5 +39,9 @@
 	"usersnoopcreated": "Created",
 	"usersnooplabel": "info",
 
-	"action-usersnoop": "see private user data"
+	"action-usersnoop": "see private user data",
+	"changeuseremail": "Change user email",
+	"usersnoop-changeuseremail-header": "Complete this form to change the email address for [[User:$1|$1]]. To remove any email address for the user, leave the new email address blank when submitting the form. ",
+	"usersnoop-changeemail-newemail-help": "This field should be left blank if you want to remove the user's email address. They will not be able to reset a forgotten password and will not receive emails from this wiki if the email address is removed.",
+	"usersnoop-eauthentsent": "A confirmation email has been sent to the specified email address."
 }
