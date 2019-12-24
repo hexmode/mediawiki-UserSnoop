@@ -65,7 +65,7 @@ class Hook {
 
 		# check to see if the user has visited this page before
 		$query = "SELECT hits, last FROM " . $wgDBprefix . "user_page_views WHERE user_id = "
-			   . $userId , " AND page_id = $artID";
+			   . $userId . " AND page_id = $artID";
 		if ( $result = $db->doQuery( $query ) ) {
 			$row = $db->fetchRow( $result );
 			$last = $row["last"];
