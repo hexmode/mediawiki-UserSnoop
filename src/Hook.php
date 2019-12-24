@@ -24,6 +24,7 @@ namespace UserSnoop;
 use Linker;
 use DatabaseUpdater;
 use RequestContext;
+use SpecialPage;
 
 class Hook {
 	/**
@@ -64,8 +65,8 @@ class Hook {
 		$userId = $wgUser->getID();
 
 		# check to see if the user has visited this page before
-		$query = "SELECT hits, last FROM " . $wgDBprefix . "user_page_views WHERE user_id = "
-			   . $userId . " AND page_id = $artID";
+		$query = "SELECT hits, last FROM " . $wgDBprefix
+			   . "user_page_views WHERE user_id = " . $userId . " AND page_id = $artID";
 		if ( $result = $db->doQuery( $query ) ) {
 			$row = $db->fetchRow( $result );
 			$last = $row["last"];

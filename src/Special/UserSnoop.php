@@ -212,12 +212,12 @@ class UserSnoop extends SpecialPage {
 			$out .= "</td></tr>";
 
 			$out .= '<tr><th>' . wfMessage( 'usersnoopblk' )->text() . '</th><th colspan="2">' . wfMessage( 'usersnoopblockreason' )->text() .
-				 '</th><th colspan="2">' . wfMessage( 'usersnoopgroups' )->text() . '</th>';
+				 '</th><th colspan="3">' . wfMessage( 'usersnoopgroups' )->text() . '</th>';
 			$out .= '<th>' . wfMessage( 'usersnooplastupdated' )->text() . '</th>';
 			$out .= '<th>' . wfMessage( 'usersnoopsignature' )->text() . '</th></tr>';
 			$out .= '<tr><td>' . ( $this->target->isBlocked() == 1 ? wfMessage( 'usersnoopyes' )->text() : wfMessage( 'usersnoopno' )->text() ) . '</td>';
 			$out .= '<td colspan="2">' . $this->target->blockedFor() . '</td>';
-			$out .= '<td colspan="2">';
+			$out .= '<td colspan="3">';
 
 			$ok = false;
 			$grps = $this->target->getEffectiveGroups();
@@ -229,14 +229,11 @@ class UserSnoop extends SpecialPage {
 				$ok = true;
 			}
 			$out .= '</td>';
-			$pc = $dbr->selectField( 'user',
-									"concat(substr(user_touched, 1, 4),
-                                        '-',substr(user_touched,5,2),
-                                        '-',substr(user_touched,7,2),
-                                        ' ',substr(user_touched,9,2),
-                                        ':',substr(user_touched,11,2),
-                                        ':',substr(user_touched,13,2))",
+
+			$pc = $dbr->selectField( 'user', 'user_touched',
 									[ 'user_name' => $this->target ], __METHOD__ );
+			$pc = ConvertibleTimestamp::convert( TS_DB, $pc );
+
 			$out .= '<td align="center">' . $pc . '</td>';
 			$sig = $this->sandboxParse( $this->target->getOption( 'nickname' ) );
 			if ( !$sig ) {
@@ -248,7 +245,7 @@ class UserSnoop extends SpecialPage {
 			# these are the "special" areas, restricted to bureaucrats only
 			if ( in_array( 'bureaucrat', $this->getUser()->getEffectiveGroups() ) ) {
 				$out .= '<tr>';
-				$out .= '<th colspan="2">' . wfMessage( 'usersnooplastlogin' )->text() . '</th>';
+				$out .= '<th colspan="3">' . wfMessage( 'usersnooplastlogin' )->text() . '</th>';
 
 				$out .= '<th rowspan="2" valign="center" align="center"><form name="userlogout" id="userlogout" method="post">';
 				$out .= '<input type="hidden" name="useraction" value="logout">';
@@ -282,17 +279,18 @@ class UserSnoop extends SpecialPage {
 
 				$out .= '</tr>';
 
-				$pc = $dbr->selectField( 'user_page_views',
-										"concat(substr(max(last), 1, 4),
-                                                '-',substr(max(last),5,2),
-                                                '-',substr(max(last),7,2),
-                                                ' ',substr(max(last),9,2),
-                                                ':',substr(max(last),11,2),
-                                                ':',substr(max(last),13,2))",
-										[ 'user_id' => $this->target->getID() ], __METHOD__ );
-				$out .= '<tr>';
+				$pc = $dbr->selectField(
+					'user_page_views', 'max(last)', [ 'user_id' => $this->target->getID() ],
+					__METHOD__
+				);
+				if ( $pc !== null ) {
+					$pc = ConvertibleTimestamp::convert( TS_DB, $pc );
+				} else  {
+					$pc = "n/a";
+				}
 
-				$out .= '<td align="center" colspan="2">' . $pc . '</td>';
+				$out .= '<tr>';
+				$out .= '<td align="center" colspan="3">' . $pc . '</td>';
 				$out .= '</tr>';
 			}
 			$out .= "</table>\n<hr>\n";
