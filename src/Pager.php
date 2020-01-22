@@ -89,11 +89,11 @@ class Pager extends AlphabeticPager {
 	}
 
 	function sandboxParse( $wikiText ) {
-		global $wgTitle, $wgUser;
+		global $wgTitle;
 
 		$myParser = new Parser();
 		$myParserOptions = new ParserOptions();
-		$myParserOptions->initialiseFromUser( $wgUser );
+		$myParserOptions->initialiseFromUser( $this->getUser() );
 		$result = $myParser->parse( $wikiText, $wgTitle, $myParserOptions );
 
 		return $result->getText();
