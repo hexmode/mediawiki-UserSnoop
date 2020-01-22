@@ -57,12 +57,12 @@ class Hook {
 	 * View tracker
 	 */
 	public static function UserPageViewTracker( &$parser, &$text ) {
-		global $wgDBprefix, $wgDBname, $wgUser;
+		global $wgDBprefix, $wgDBname;
 
 		$title = $parser->getTitle();
 		$artID = $title->getArticleID();
 		$db = &wfGetDB( DB_REPLICA );
-		$userId = $wgUser->getID();
+		$userId = $parser->getUser()->getID();
 
 		# check to see if the user has visited this page before
 		$query = "SELECT hits, last FROM " . $wgDBprefix
