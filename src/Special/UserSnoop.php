@@ -322,8 +322,11 @@ class UserSnoop extends SpecialPage {
 		if ( $blk->insert() ) {
 			$log = new LogPage( 'block' );
 			$log->addEntry(
-				'block', Title::makeTitle( NS_USER, $this->target ),
-				'Blocked through Special:UserSnoop', [ 'infinite', 'nocreate' ]
+				'block',
+				Title::makeTitle( NS_USER, $this->target ),
+				'Blocked through Special:UserSnoop',
+				[ 'infinite', 'nocreate' ],
+				$this->getUser()
 			);
 		}
 	}
@@ -338,7 +341,13 @@ class UserSnoop extends SpecialPage {
 
 		if ( $blk->delete() ) {
 			$log = new LogPage( 'block' );
-			$log->addEntry( 'unblock', Title::makeTitle( NS_USER, $this->target ), wfMessage( 'usersnoopunblockmessage' )->text() );
+			$log->addEntry(
+				'unblock',
+				Title::makeTitle( NS_USER, $this->target ),
+				wfMessage( 'usersnoopunblockmessage' )->text(),
+				[],
+				this->getUser()
+			);
 		}
 	}
 }
