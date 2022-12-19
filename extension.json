@@ -2,11 +2,8 @@
 	"name": "UserSnoop",
 	"version": "0.1.0",
 	"license-name": "GPL-2.0",
-	"author": [
-		"Kimon Andreou",
-		"[https://nichework.com/ Mark A. Hershberger]"
-	],
-	"require": [ "1.33" ],
+	"author": ["Kimon Andreou", "[https://nichework.com/ Mark A. Hershberger]"],
+	"requires": { "MediaWiki": "1.33" },
 	"url": "https://www.mediawiki.org/wiki/Extension:UserSnoop",
 	"descriptionmsg": "usersnoop-desc",
 	"type": "specialpage",
@@ -15,9 +12,7 @@
 		"ChangeUserEmail": "UserSnoop\\Special\\ChangeUserEmail"
 	},
 	"MessagesDirs": {
-		"UserSnoop": [
-			"i18n"
-		]
+		"UserSnoop": ["i18n"]
 	},
 	"AutoloadClasses": {
 		"UserSnoop\\UserSnoop": "src/UserSnoop.php",
@@ -36,9 +31,7 @@
 		"LoadExtensionSchemaUpdates": [
 			"UserSnoop\\Hook::onLoadExtensionSchemaUpdates"
 		],
-		"UserToolLinksEdit": [
-			"UserSnoop\\Hook::onUserToolLinksEdit"
-		]
+		"UserToolLinksEdit": ["UserSnoop\\Hook::onUserToolLinksEdit"]
 	},
 	"GroupPermissions": {
 		"sysop": {
@@ -47,11 +40,8 @@
 		"bureaucrat": {
 			"usersnoop": true
 		}
-
 	},
-	"AvailableRights": [
-		"usersnoop"
-	],
+	"AvailableRights": ["usersnoop"],
 	"config": {
 		"_prefix": "UserSnoop"
 	},
